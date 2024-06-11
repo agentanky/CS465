@@ -14,7 +14,16 @@ export class TripDataService {
   getTrips(): Observable<Trip[]> {
     return this.http.get<Trip[]>(this.apiUrl);
   }
+
   addTrip(trip: Trip): Observable<Trip> {
     return this.http.post<Trip>(this.apiUrl, trip);
+  }
+
+  getTrip(tripCode: string): Observable<Trip[]> {
+    return this.http.get<Trip[]>(`${this.apiUrl}/${tripCode}`);
+  }
+
+  updateTrip(trip: Trip): Observable<Trip> {
+    return this.http.put<Trip>(`${this.apiUrl}/${trip.code}`, trip);
   }
 }
