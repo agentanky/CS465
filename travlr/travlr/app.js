@@ -36,7 +36,9 @@ app.use(passport.initialize());
 
 // Deserialize JWT payload into req.payload
 app.use(async (req, res, next) => {
+  console.log('Middleware executed'); // Log to confirm middleware execution
   if (req.headers && req.headers.authorization) {
+    console.log('Authorization header found:', req.headers.authorization); // Log the authorization header
     const token = req.headers.authorization.split(' ')[1];
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -53,7 +55,7 @@ app.use(async (req, res, next) => {
       console.log('Error verifying JWT:', err);
     }
   } else {
-    console.log('No authorization header found');
+    console.log('Authorization header found');
   }
   next();
 });

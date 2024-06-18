@@ -5,9 +5,8 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <p>
-      home works!
-    </p>
+  <div class="container" *ngIf="!isLoggedIn()">Please login to
+  continue</div>
   `,
   styles: ``
 })

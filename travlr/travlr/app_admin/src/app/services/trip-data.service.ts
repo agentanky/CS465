@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BROWSER_STORAGE } from '../storage';
 import { User } from '../models/user';
 import { AuthResponse } from '../models/authresponse';
@@ -40,15 +40,21 @@ export class TripDataService {
   }
 
   public addTrip(trip: Trip): Observable<Trip> {
-    return this.http.post<Trip>(`${this.apiBaseUrl}/trips`, trip);
+    const token = this.storage.getItem('travlr-token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<Trip>(`${this.apiBaseUrl}/trips`, trip, { headers });
   }
 
   public getTrip(tripCode: string): Observable<Trip> {
-    return this.http.get<Trip>(`${this.apiBaseUrl}/trips/${tripCode}`);
+    const token = this.storage.getItem('travlr-token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Trip>(`${this.apiBaseUrl}/trips/${tripCode}`, { headers });
   }
 
   public updateTrip(trip: Trip): Observable<Trip> {
-    return this.http.put<Trip>(`${this.apiBaseUrl}/trips/${trip.code}`, trip);
+    const token = this.storage.getItem('travlr-token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<Trip>(`${this.apiBaseUrl}/trips/${trip.code}`, trip, { headers });
   }
 
   private handleError(error: any): Promise<any> {

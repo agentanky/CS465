@@ -28,17 +28,13 @@ const login = (req, res) => {
   }
 
   passport.authenticate('local', (err, user, info) => {
-    console.log('Passport authentication called'); // Debug log
     if (err) {
-      console.error('Authentication error:', err);
       return res.status(404).json(err);
     }
     if (user) {
-      console.log('User authenticated:', user); // Debug log
       const token = user.generateJwt();
       return res.status(200).json({ token });
     } else {
-      console.log('Authentication failed:', info); // Debug log
       return res.status(401).json(info);
     }
   })(req, res);
