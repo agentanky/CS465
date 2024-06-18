@@ -1,7 +1,45 @@
 const mongoose = require('mongoose');
 const Trip = require('../models/travlr');
+const User = require('../models/user');
 
-// Get Trips
+const tripsAddTrip = async (req, res) => {
+  try {
+    console.log('Payload in tripsAddTrip:', req.payload);
+    const user = await getUser(req);
+    console.log('User in tripsAddTrip callback:', user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Add trip logic here
+    return res.status(200).json({ message: "User found", user });
+  } catch (err) {
+    console.log('Error in tripsAddTrip:', err);
+    return res.status(500).json({ message: "Error adding trip", error: err });
+  }
+};
+
+const getUser = async (req) => {
+  try {
+    console.log('Payload in getUser:', req.payload);
+    if (req.payload && req.payload._id) {
+      console.log('User ID in JWT:', req.payload._id);
+      const user = await User.findById(req.payload._id).select('name email').exec();
+      if (!user) {
+        console.log("User not found");
+        return null;
+      }
+      console.log("User found:", user);
+      return user;
+    } else {
+      console.log('No userId in request');
+      return null;
+    }
+  } catch (err) {
+    console.log("Error finding user:", err);
+    return null;
+  }
+};
+
 const tripsList = async (req, res) => {
   try {
     const q = await Trip.find({}).exec();
@@ -28,52 +66,19 @@ const tripsFindByCode = async (req, res) => {
   }
 };
 
-const tripsAddTrip = async (req, res) => {
-  try {
-    const newTrip = new Trip({
-      code: req.body.code,
-      name: req.body.name,
-      length: req.body.length,
-      start: req.body.start,
-      resort: req.body.resort,
-      perPerson: req.body.perPerson,
-      image: `assets/images/${req.body.image.replace(/^.*[\\/]/, '')}`,
-      description: req.body.description
-    });
-    const q = await newTrip.save();
-    return res.status(201).json(q);
-  } catch (err) {
-    return res.status(500).json(err);
-  }
-};
-
-// PUT: /trips/:tripCode - Updates an existing Trip
 const tripsUpdateTrip = async (req, res) => {
   try {
-    const updatedTrip = {
-      code: req.body.code,
-      name: req.body.name,
-      length: req.body.length,
-      start: req.body.start,
-      resort: req.body.resort,
-      perPerson: req.body.perPerson,
-      image: `assets/images/${req.body.image.replace(/^.*[\\/]/, '')}`, // Ensure correct path
-      description: req.body.description
-    };
-
-    const q = await Trip.findOneAndUpdate(
-      { 'code': req.params.tripCode },
-      updatedTrip,
-      { new: true } // Return the updated document
-    ).exec();
-
-    if (!q) {
-      return res.status(400).json({ message: 'No Trip found and we had an issue updating' });
-    } else {
-      return res.status(201).json(q);
+    console.log('Payload in tripsUpdateTrip:', req.payload);
+    const user = await getUser(req);
+    console.log('User in tripsUpdateTrip callback:', user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    // Update trip logic here
+    return res.status(200).json({ message: "User found", user });
   } catch (err) {
-    return res.status(500).json(err);
+    console.log('Error in tripsUpdateTrip:', err);
+    return res.status(500).json({ message: "Error updating trip", error: err });
   }
 };
 
@@ -81,5 +86,6 @@ module.exports = {
   tripsList,
   tripsFindByCode,
   tripsAddTrip,
-  tripsUpdateTrip
+  tripsUpdateTrip,
+  getUser
 };

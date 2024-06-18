@@ -86,9 +86,11 @@ export class EditTripComponent implements OnInit {
 
     if (tripCode) {
       this.tripDataService.getTrip(tripCode).subscribe(trip => {
-        if (trip.length > 0) {
+        if (Array.isArray(trip) && trip.length > 0) {
           this.editForm.patchValue(trip[0]);
         }
+
+
       });
     }
   }

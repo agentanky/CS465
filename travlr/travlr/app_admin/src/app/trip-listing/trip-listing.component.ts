@@ -2,19 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trips } from '../data/trips';
 import { TripDataService } from '../services/trip-data.service';
-
 import { TripCardComponent } from '../trip-card/trip-card.component';
-
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-trip-listing',
   standalone: true,
   imports: [CommonModule, TripCardComponent],
   template: `
-  <!-- <pre>{{trips | json}}</pre> -->
-  <div>
-    <button (click)="addTrip()" class = "btn btn-info">Add Trip</button>
+  <div *ngIf="isLoggedIn()">
+    <button (click)="addTrip()" class="btn btn-info">Add Trip</button>
   </div>
   <div class="row">
     <div *ngFor="let trip of trips" class="col-3">
@@ -32,7 +30,8 @@ export class TripListingComponent implements OnInit {
 
   constructor(
     private tripDataService: TripDataService,
-    private router: Router
+    private router: Router,
+    private authenticationService: AuthenticationService
   ) {
     console.log('trip-listing constructor');
   }
@@ -57,6 +56,10 @@ export class TripListingComponent implements OnInit {
           console.log('Error: ' + error);
         }
       });
+  }
+
+  public isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
   }
 
   ngOnInit(): void {
